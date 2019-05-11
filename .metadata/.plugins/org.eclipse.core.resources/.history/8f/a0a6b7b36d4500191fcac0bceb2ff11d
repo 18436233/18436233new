@@ -1,0 +1,22 @@
+package yychatsserver;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+
+public class StartServer {
+
+	public StartServer() {
+		ServerSocket ss;
+		try {
+			ss=new ServerSocket(3456);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

@@ -1,0 +1,6 @@
+#Sun Apr 28 10:28:44 CST 2019
+__DEFAULT__=false
+org.eclipse.sdk.Eclipse.master=true
+org.eclipse.sdk.Google.master=true
+org.eclipse.help.ui.localSearch.master=true
+expression=myFriendLabel[i].setEnabled(true);

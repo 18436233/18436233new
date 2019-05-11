@@ -1,0 +1,38 @@
+package com.yychatclient.control;
+
+import java.io.*;
+import java.net.Socket;
+
+import com.chatclient.view.FriendChatClient1;
+import com.chatclient.view.FriendList;
+import com.yychat.model.Message;
+
+public class ClientReceiverThread extends Thread{
+	Socket s;
+	public ClientReceiverThread(Socket s) {
+		this.s=s;
+	}
+
+
+	public void run(){
+		while(true){
+			try {
+				ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
+				Message mess = (Message)ois.readObject();
+				String showMessage=mess.getSender()+"¶Ô"+mess.getReceiver()+"Ëµ£º"+mess.getContent();
+				System.out.println(showMessage);
+				
+				FriendChatClient1 friendChatClient1=(FriendChatClient1)FriendList.hmFriendChat1.get(mess.getReceiver()+"to"+mess.getSender());
+				
+				friendChatClient1.appendJta(showMessage);
+				//3
+			if(mess.getMessageType().equals(Message.message_OnlineFriend)){
+				
+			}
+				
+			} catch (IOException | ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}

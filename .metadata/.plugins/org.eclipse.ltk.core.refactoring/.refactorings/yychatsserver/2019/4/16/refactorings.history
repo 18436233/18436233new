@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Extract method &apos;private void senderMessage(Socket s) throws IOException &apos; from &apos;yychatsserver.ServerReceiverThread.run()&apos; to &apos;yychatsserver.ServerReceiverThread&apos;&#x0D;&#x0A;- Original project: &apos;yychatsserver&apos;&#x0D;&#x0A;- Method name: &apos;senderMessage&apos;&#x0D;&#x0A;- Destination type: &apos;yychatsserver.ServerReceiverThread&apos;&#x0D;&#x0A;- Declared visibility: &apos;private&apos;" comments="false" description="Extract method &apos;senderMessage&apos;" destination="0" exceptions="false" flags="786434" id="org.eclipse.jdt.ui.extract.method" input="/src&lt;yychatsserver{ServerReceiverThread.java" name="senderMessage" replace="false" selection="853 78" stamp="1555461725411" version="1.0" visibility="2"/>
+</session>

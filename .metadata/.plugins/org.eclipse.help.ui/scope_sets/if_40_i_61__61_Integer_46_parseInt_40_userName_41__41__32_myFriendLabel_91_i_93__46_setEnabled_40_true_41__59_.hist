@@ -1,0 +1,6 @@
+#Sun Apr 28 10:28:41 CST 2019
+__DEFAULT__=false
+org.eclipse.sdk.Eclipse.master=true
+org.eclipse.sdk.Google.master=true
+org.eclipse.help.ui.localSearch.master=true
+expression=if(i\=\=Integer.parseInt(userName)) myFriendLabel[i].setEnabled(true);
