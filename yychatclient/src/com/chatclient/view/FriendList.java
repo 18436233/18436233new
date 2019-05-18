@@ -37,7 +37,9 @@ public class FriendList extends JFrame implements ActionListener,MouseListener{/
 	
 	JButton blackListJButton1;
 	String userName;
-	public FriendList(String userName){
+	
+	//public FriendList(String userName){
+	public FriendList(String userNames,String friendString){
 		this.userName=userName;
 		//第一张卡片
 		myFriendPanel=new JPanel(new BorderLayout());//边界布局
@@ -47,7 +49,21 @@ public class FriendList extends JFrame implements ActionListener,MouseListener{/
 		myFriendPanel.add(myFriendJButton,"North");
 		
 		//中部
-		myFriendListJPanel=new JPanel(new GridLayout(FRIENDCOUNT-1,1));
+		String[] friendName= friendString.split(" ");
+		int count=friendName.length;
+		myFriendListJPanel=new JPanel(new GridLayout(count,1));
+		for(int i=0;i<count;i++)
+		{
+			myFriendJLabel[i]=new JLabel(friendName[i]+"",new ImageIcon("images/YY0.gif"),JLabel.LEFT);//"1"
+			//myFriendJLabel[i].setEnabled(false);
+			//
+			//if(Integer.parseInt(userName)==i)myFriendJLabel[i].setEnabled(true);
+			
+			myFriendJLabel[i].addMouseListener(this);
+			myFriendListJPanel.add(myFriendJLabel[i]);
+		}
+		
+		/*myFriendListJPanel=new JPanel(new GridLayout(FRIENDCOUNT-1,1));
 		for(int i=1;i<FRIENDCOUNT;i++)
 		{
 			myFriendJLabel[i]=new JLabel(i+"",new ImageIcon("images/YY0.gif"),JLabel.LEFT);//"1"
@@ -57,7 +73,7 @@ public class FriendList extends JFrame implements ActionListener,MouseListener{/
 			
 			myFriendJLabel[i].addMouseListener(this);
 			myFriendListJPanel.add(myFriendJLabel[i]);
-		}
+		}*/
 		//myFriendJLabel[Integer.parseInt(userName)].setEnabled(true);
 		//myFriendScrollPane=new JScrollPane();
 		//myFriendScrollPane.add(myFriendListJPanel);

@@ -43,7 +43,7 @@ public class StartServer implements sendMessage {
 		System.out.println(userName);
 		System.out.println(passWord);
 		
-		//从数据库中实现用户的登录验证
+		/*//从数据库中实现用户的登录验证
 		//1、加载驱动程序
 		Class.forName("com.mysql.jdbc.Driver");
 		System.out.println("已经加载了数据库驱动！");
@@ -52,7 +52,7 @@ public class StartServer implements sendMessage {
 		String dbuser="root";
 		String dbpass = "";
 		Connection conn= DriverManager.getConnection(url,dbuser,dbpass);
-		System.out.println("2");
+		//System.out.println("2");
 		//3、创建PreparedStatement对象，用来执行SQL语句，标准
 		String user_Login_Sql="select * from user where username=? and password=?";
 		PreparedStatement ptmt=conn.prepareStatement(user_Login_Sql);
@@ -61,11 +61,11 @@ public class StartServer implements sendMessage {
 		
 		//4、执行查询，返回结果集
 		ResultSet rs =ptmt.executeQuery();
-		System.out.println("3");
+		//System.out.println("3");
 		//5、根据结果集来判断是否能登录
-		boolean loginSuccess =rs.next();
+		boolean loginSuccess =rs.next();*/
 		
-		
+		boolean loginSuccess=YychatDbUtil.loginValidate(userName, passWord);
 		
 		
 		//
@@ -76,9 +76,9 @@ public class StartServer implements sendMessage {
 			//
 		if(loginSuccess){
 			mess.setMessageType(Message.message_LoginSuccess);//
-			
+			String friendString=YychatDbUtil.getFriendString(userName);
 			//
-			String friend_Relation_Sql="select slaveuser from relation where majoruser=? and relationtype='1'";
+			/*String friend_Relation_Sql="select slaveuser from relation where majoruser=? and relationtype='1'";
 			ptmt=conn.prepareStatement(friend_Relation_Sql);
 			ptmt.setString(1,userName);
 			rs=ptmt.executeQuery();
@@ -86,7 +86,7 @@ public class StartServer implements sendMessage {
 			while(rs.next()){
 				//rs.getString(1);
 				friendString=friendString+rs.getString("slaveuser")+" ";
-			}
+			}*/
 			mess.setContent(friendString);
 			System.out.println(userName+"的relation数据表中好友："+friendString);
 		
@@ -128,7 +128,6 @@ public class StartServer implements sendMessage {
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

@@ -20,8 +20,33 @@ public class ClientConnet {
 			e.printStackTrace();
 		}
 	}
+	public Message loginValidateFromDB(User user){
+		ObjectOutputStream oos;
+		ObjectInputStream ois;
+		Message mess=null;
+		try {
+			oos =new ObjectOutputStream(s.getOutputStream());
+			oos.writeObject(user);
+			//System.out.println("用户登录消息发送成功！密码是："+user.getPassWord());
+			//
+			ois=new ObjectInputStream(s.getInputStream());
+			mess=(Message)ois.readObject();
+			
+			//System.out.println("收到服务器返回的登录是否成功的消息,类型是："+mess.getMessageType());
+			
+			if(mess.getMessageType().equals(Message.message_LoginSuccess)){
+				System.out.println(user.getUserName()+"登录成功!");
+				hmSocket.put(user.getUserName(), s);
+				new ClientReceiverThread(s).start();
+			}
+		}
+			catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return mess;
 		
-	public boolean loginValidate(User user){
+	}
+	/*public boolean loginValidate(User user){
 		boolean loginSuccess=false;
 		ObjectOutputStream oos;
 		ObjectInputStream ois;
@@ -48,5 +73,5 @@ public class ClientConnet {
 		}
 		return loginSuccess;
 		
-	}
+	}*/
 }

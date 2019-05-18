@@ -1,0 +1,9 @@
+package yychatsserver;
+
+public class YychatDbUtil {
+
+	public YychatDbUtil() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

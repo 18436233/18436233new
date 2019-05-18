@@ -120,23 +120,26 @@ public class ClientLogin extends JFrame implements ActionListener,KeyListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==jb1);{
-			String userName= jtf1.getText();
+			String userName= jtf1.getText().trim();
 			String password=new String(jpf1.getPassword());
 			//创建User对象 
 			User user =new User();
 			user.setUserName(userName);
 			user.setPassWord(password);
 			
-			boolean loginSuccess=new ClientConnet().loginValidate(user);
-			if(loginSuccess){
-				FriendList friendList=new FriendList(userName);
+			//boolean loginSuccess=new ClientConnet().loginValidate(user);
+			Message mess =new ClientConnet().loginValidateFromDB(user);
+			if(mess.getMessageType().equals(Message.message_LoginSuccess)){
+				String friendString=mess.getContent();
+				//FriendList friendList=new FriendList(userName);
+				FriendList friendList=new FriendList(userName,friendString);
 				hmFirendlist.put(userName, friendList);
 				
 				//1
-				Message mess = new Message();
-				mess.setSender(userName);
-				mess.setReceiver("Sever");
-				mess.setMessageType(Message.message_RequestOnlineFriend);
+				Message mess1 = new Message();
+				mess1.setSender(userName);
+				mess1.setReceiver("Sever");
+				mess1.setMessageType(Message.message_RequestOnlineFriend);
 				Socket s=(Socket)ClientConnet.hmSocket.get(userName);
 				ObjectOutputStream oos;
 				try {
@@ -171,16 +174,19 @@ public class ClientLogin extends JFrame implements ActionListener,KeyListener{
 			user.setUserName(userName);
 			user.setPassWord(password);
 			
-			boolean loginSuccess=new ClientConnet().loginValidate(user);
-			if(loginSuccess){
-				FriendList friendList=new FriendList(userName);
+			//boolean loginSuccess=new ClientConnet().loginValidate(user);
+			Message mess =new ClientConnet().loginValidateFromDB(user);
+			if(mess.getMessageType().equals(Message.message_LoginSuccess)){
+				String friendString=mess.getContent();
+				//FriendList friendList=new FriendList(userName);
+				FriendList friendList=new FriendList(userName,friendString);
 				hmFirendlist.put(userName, friendList);
 				
 				//1
-				Message mess = new Message();
-				mess.setSender(userName);
-				mess.setReceiver("Sever");
-				mess.setMessageType(Message.message_RequestOnlineFriend);
+				Message mess1 = new Message();
+				mess1.setSender(userName);
+				mess1.setReceiver("Sever");
+				mess1.setMessageType(Message.message_RequestOnlineFriend);
 				Socket s=(Socket)ClientConnet.hmSocket.get(userName);
 				ObjectOutputStream oos;
 				try {
