@@ -1,10 +1,17 @@
 package yychatsserver;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.Socket;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
+
+import com.yychat.model.Message;
+import com.yychat.model.User;
 
 public class YychatDbUtil {
 	public static final String MYSQLDRIVER ="com.mysql.jdbc.Driver";
@@ -32,7 +39,55 @@ public class YychatDbUtil {
 		}
 		return conn;
 	}
+	
+	public static void addUser(String userName,String passWord){
+		Connection conn =getConnection();
+		String user_Login_Sql="insert into user (username,password,registertimestamp) values(?,?,?)";
+		PreparedStatement ptmt=null;
+		
+		try {
+			ptmt=conn.prepareStatement(user_Login_Sql);	
+			ptmt.setString(1,userName);
+			ptmt.setString(2,passWord);
+			//java.util.Date date=new java.util.Date();
+			Date date=new Date();
+			java.sql.Timestamp timestamp=new java.sql.Timestamp(date.getTime());
+			ptmt.setTimestamp(3, timestamp);
+			//4、执行查询，返回结果集
+			int count=ptmt.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			closeDB(conn,ptmt);
+		}
+	}
+		
+	public static boolean seekUser(String userName) {
+		boolean seekUserResult=false;
+		Connection conn =getConnection();
+		String user_Login_Sql="select * from user where username=?";
+		PreparedStatement ptmt=null;
+		ResultSet rs=null;
+		
+		try {
+			ptmt=conn.prepareStatement(user_Login_Sql);	
+			ptmt.setString(1,userName);
 			
+			//4、执行查询，返回结果集
+			rs =ptmt.executeQuery();
+			//5、根据结果集来判断是否能登录
+			seekUserResult =rs.next();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			closeDB(conn,ptmt,rs);
+		}
+		
+		return seekUserResult;
+	}
+		
 		public static boolean loginValidate(String userName,String passWord){
 			boolean loginSuccess=false;
 			Connection conn =getConnection();
@@ -60,6 +115,41 @@ public class YychatDbUtil {
 			return loginSuccess;
 			}
 		
+		/*public static Message mess(Socket s) {
+			ObjectInputStream ois;
+			try {
+				ois = new ObjectInputStream(s.getInputStream());
+				User user=(User)ois.readObject();
+				String userName=user.getUserName();
+			String passWord=user.getPassWord();
+			boolean loginSuccess=YychatDbUtil.loginValidate(userName, passWord);
+			
+			mess=new Message();
+			mess.setSender("Server");
+			mess.setReceiver(user.getUserName());
+			//if(user.getPassWord().equals("123456")){
+				//
+			if(loginSuccess){
+				mess.setMessageType(Message.message_LoginSuccess);//
+				String friendString=YychatDbUtil.getFriendString(userName);
+				//
+				mess.setContent(friendString);
+				System.out.println(userName+"的relation数据表中好友："+friendString);
+			
+			}else{
+				mess.setMessageType(Message.message_LoginFailure);//
+				
+			}
+			} catch (IOException | ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+			return mess(s);
+		}*/
+
+		
 	public static String getFriendString(String userName) {
 		Connection conn =getConnection();
 		PreparedStatement ptmt=null;
@@ -82,6 +172,22 @@ public class YychatDbUtil {
 			}
 		return friendString;
 		
+	}
+	public static void closeDB(Connection conn,PreparedStatement ptmt){
+		if(conn!=null){
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		if(ptmt!=null){
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 		public static void closeDB(Connection conn,PreparedStatement ptmt,ResultSet rs){
 			if(conn!=null){

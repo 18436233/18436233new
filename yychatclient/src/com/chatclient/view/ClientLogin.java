@@ -105,8 +105,9 @@ public class ClientLogin extends JFrame implements ActionListener,KeyListener{
 
 		jp1.add(jb1);jp1.add(jb2);jp1.add(jb3);
 		this.add(jp1,"South" );
-				
+
 		jb1.addActionListener(this);
+		jb2.addActionListener(this);
 		this.setSize(350,240);
 		this.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
@@ -119,13 +120,30 @@ public class ClientLogin extends JFrame implements ActionListener,KeyListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource()==jb1);{
+		if(e.getSource()==jb2){
 			String userName= jtf1.getText().trim();
 			String password=new String(jpf1.getPassword());
 			//创建User对象 
 			User user =new User();
 			user.setUserName(userName);
 			user.setPassWord(password);
+			user.setuserMessageType("USER_REGISTER");
+			boolean registerSuccess =new ClientConnet().registerUserIntoDB(user);
+			if(registerSuccess){
+				JOptionPane.showMessageDialog(this, "注册成功!");
+			}else{
+				JOptionPane.showMessageDialog(this, "注册失败!可能是用户名重复！");
+			}
+		}
+		
+		if(e.getSource()==jb1){
+			String userName= jtf1.getText().trim();
+			String password=new String(jpf1.getPassword());
+			//创建User对象 
+			User user =new User();
+			user.setUserName(userName);
+			user.setPassWord(password);
+			user.setuserMessageType("USER_LOGIN");
 			
 			//boolean loginSuccess=new ClientConnet().loginValidate(user);
 			Message mess =new ClientConnet().loginValidateFromDB(user);

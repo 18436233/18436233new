@@ -43,31 +43,27 @@ public class StartServer implements sendMessage {
 		System.out.println(userName);
 		System.out.println(passWord);
 		
-		/*//从数据库中实现用户的登录验证
-		//1、加载驱动程序
-		Class.forName("com.mysql.jdbc.Driver");
-		System.out.println("已经加载了数据库驱动！");
-		//2、获取连接的对象
-		String url="jdbc:mysql://127.0.0.1:3306/嘤嘤chat";
-		String dbuser="root";
-		String dbpass = "";
-		Connection conn= DriverManager.getConnection(url,dbuser,dbpass);
-		//System.out.println("2");
-		//3、创建PreparedStatement对象，用来执行SQL语句，标准
-		String user_Login_Sql="select * from user where username=? and password=?";
-		PreparedStatement ptmt=conn.prepareStatement(user_Login_Sql);
-		ptmt.setString(1,userName);
-		ptmt.setString(2,passWord);
+		if(user.getuserMessageType().equals("USER_REGISTER")){
+			boolean seekUserResult=YychatDbUtil.seekUser(userName);
+			mess=new Message();
+			mess.setSender("Server");
+			mess.setReceiver(userName);
+			if(seekUserResult){
+				mess.setMessageType(Message.message_RegisterFailure);
+				//System.out.println("注册失败 ");
+			}else {
+				YychatDbUtil.addUser(userName,passWord);
+				mess.setMessageType(Message.message_RegisterSuccess);
+				//System.out.println("注册成功 ");
+			}
+			sendMessage(s,mess);
+			s.close();
+		}
 		
-		//4、执行查询，返回结果集
-		ResultSet rs =ptmt.executeQuery();
-		//System.out.println("3");
-		//5、根据结果集来判断是否能登录
-		boolean loginSuccess =rs.next();*/
+		
+		if(user.getuserMessageType().equals("USER_LOGIN")){
 		
 		boolean loginSuccess=YychatDbUtil.loginValidate(userName, passWord);
-		
-		
 		//
 		mess=new Message();
 		mess.setSender("Server");
@@ -78,15 +74,6 @@ public class StartServer implements sendMessage {
 			mess.setMessageType(Message.message_LoginSuccess);//
 			String friendString=YychatDbUtil.getFriendString(userName);
 			//
-			/*String friend_Relation_Sql="select slaveuser from relation where majoruser=? and relationtype='1'";
-			ptmt=conn.prepareStatement(friend_Relation_Sql);
-			ptmt.setString(1,userName);
-			rs=ptmt.executeQuery();
-			String friendString="";
-			while(rs.next()){
-				//rs.getString(1);
-				friendString=friendString+rs.getString("slaveuser")+" ";
-			}*/
 			mess.setContent(friendString);
 			System.out.println(userName+"的relation数据表中好友："+friendString);
 		
@@ -97,7 +84,6 @@ public class StartServer implements sendMessage {
 		sendMessage(s,mess);
 		
 		//
-		//if(user.getPassWord().equals("123456")){
 		if(loginSuccess){
 			//2.1
 			mess.setMessageType(Message.message_NewOnlineFriend);
@@ -124,14 +110,12 @@ public class StartServer implements sendMessage {
 			}
 		}
 
-		
+	}
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		} 
 	}
-
+	
 	public void sendMessage(Socket s,Message mess) throws IOException {
 		ObjectOutputStream oos =new ObjectOutputStream(s.getOutputStream());
 		oos.writeObject(mess);
