@@ -39,7 +39,29 @@ public class YychatDbUtil {
 		}
 		return conn;
 	}
-	
+		public static int addRelation(String majorUser,String slaveUser,String relationType){
+			int count =0;
+			Connection conn =getConnection();
+			String relation_Add_Sql="insert into relation (majoruser,slaveuser,relationtype) values(?,?,?)";
+			PreparedStatement ptmt=null;
+			
+			try {
+				ptmt=conn.prepareStatement(relation_Add_Sql);	
+				ptmt.setString(1,majorUser);
+				ptmt.setString(2,slaveUser);
+				ptmt.setString(3,relationType);
+				//java.util.Date date=new java.util.Date();
+				//4、执行查询，返回结果集
+				count=ptmt.executeUpdate();//插入记录的条数
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally{
+				closeDB(conn,ptmt);
+			}
+			return count;
+		}	
+		
 	public static void addUser(String userName,String passWord){
 		Connection conn =getConnection();
 		String user_Login_Sql="insert into user (username,password,registertimestamp) values(?,?,?)";
@@ -115,40 +137,30 @@ public class YychatDbUtil {
 			return loginSuccess;
 			}
 		
-		/*public static Message mess(Socket s) {
-			ObjectInputStream ois;
+		public static boolean seekRelation(String majorUser,String slaveUser,String relationType) {
+			Connection conn =getConnection();
+			PreparedStatement ptmt=null;
+			ResultSet rs=null;
+			boolean seekRelationResult=false;
+			String seek_Relation_Sql="select * from relation where majoruser=? and slaveUser=? and relationtype=?";
 			try {
-				ois = new ObjectInputStream(s.getInputStream());
-				User user=(User)ois.readObject();
-				String userName=user.getUserName();
-			String passWord=user.getPassWord();
-			boolean loginSuccess=YychatDbUtil.loginValidate(userName, passWord);
-			
-			mess=new Message();
-			mess.setSender("Server");
-			mess.setReceiver(user.getUserName());
-			//if(user.getPassWord().equals("123456")){
-				//
-			if(loginSuccess){
-				mess.setMessageType(Message.message_LoginSuccess);//
-				String friendString=YychatDbUtil.getFriendString(userName);
-				//
-				mess.setContent(friendString);
-				System.out.println(userName+"的relation数据表中好友："+friendString);
-			
-			}else{
-				mess.setMessageType(Message.message_LoginFailure);//
-				
-			}
-			} catch (IOException | ClassNotFoundException e) {
+				ptmt=conn.prepareStatement(seek_Relation_Sql);
+				ptmt.setString(1,majorUser);
+				ptmt.setString(2,slaveUser);
+				ptmt.setString(3,relationType);
+				rs=ptmt.executeQuery();
+				seekRelationResult =rs.next();
+			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
+			finally{
+					closeDB(conn,ptmt,rs);
+				}
+			return seekRelationResult;
 			
-			return mess(s);
-		}*/
-
+		}
 		
 	public static String getFriendString(String userName) {
 		Connection conn =getConnection();
